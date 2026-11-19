@@ -12,7 +12,8 @@ ENV PCRE_VERSION 8.39
 ENV LUAJIT_LIB /usr/local/lib
 ENV LUAJIT_INC /usr/local/include/luajit-2.1
 
-RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
+RUN set -eux; \
+    GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
     && CONFIG="\
         --prefix=/etc/nginx \
         --sbin-path=/usr/sbin/nginx \
@@ -84,21 +85,13 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
     && curl -fSL https://github.com/simplresty/ngx_devel_kit/archive/v$NGX_DEVEL_KIT_VERSION.tar.gz -o ngx_devel_kit.tar.gz \
     && curl -fSL https://github.com/openresty/lua-nginx-module/archive/v$LUA_NGINX_MODULE_VERSION.tar.gz -o lua-nginx-module.tar.gz \
     && curl -fSL https://github.com/openresty/lua-cjson/archive/$LUA_CSJSON_MODULE_VERSION.tar.gz -o lua-cjson.tar.gz \
-    && curl -fSL "https://ja.osdn.net/frs/g_redir.php?m=kent&f=pcre%2Fpcre%2F8.39%2Fpcre-$PCRE_VERSION.tar.gz" -o pcre.tar.gz \
+    && curl -fSL "https://ftp.exim.org/pub/pcre/pcre-$PCRE_VERSION.tar.gz" -o pcre.tar.gz \
     && export GNUPGHOME="$(mktemp -d)" \
-    && found=''; \
-    for server in \
-        ha.pool.sks-keyservers.net \
-        hkp://keyserver.ubuntu.com:80 \
-        hkp://p80.pool.sks-keyservers.net:80 \
-        pgp.mit.edu \
-    ; do \
-        echo "Fetching GPG key $GPG_KEYS from $server"; \
-        gpg --keyserver "$server" --keyserver-options timeout=10 --recv-keys "$GPG_KEYS" && found=yes && break; \
-    done; \
-    test -z "$found" && echo >&2 "error: failed to fetch GPG key $GPG_KEYS" && exit 1; \
-    gpg --batch --verify nginx.tar.gz.asc nginx.tar.gz \
-    && rm -rf "$GNUPGHOME" nginx.tar.gz.asc \
+    && curl -fSL https://freenginx.org/keys/mdounin.key -o nginx-signing.key \
+    && gpg --batch --import nginx-signing.key \
+    && gpg --batch --fingerprint --with-colons "$GPG_KEYS" | grep -F "fpr:::::::::$GPG_KEYS:" \
+    && gpg --batch --verify nginx.tar.gz.asc nginx.tar.gz \
+    && rm -rf "$GNUPGHOME" nginx.tar.gz.asc nginx-signing.key \
     && mkdir -p /usr/src \
     && tar -zxC /usr/src -f nginx.tar.gz \
     && tar -zxC /usr/src -f luajit2.tar.gz \
