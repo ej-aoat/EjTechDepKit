@@ -1,0 +1,30 @@
+# このファイルはIromanamoriプロジェクトの上位階層（ドキュメントルート）に配置してください。
+# 詳しくはドキュメントを参照してください。
+
+# git
+.git
+
+# Project Files
+document
+study
+subsystem
+toolkit
+workspace
+
+# Lib
+
+# C# build
+**/bin
+**/obj
+
+## 変更予定
+
+# node build
+**/.angular
+**/dist
+
+# node_modules
+**/node_modules
+
+# Docker
+Dockerfile_*
