@@ -9,8 +9,8 @@ services:
       - "8080:80"
     volumes:
       # nginx.conは、このワークスペースにある/app/www/nginx.confを下記の場所に配置してください。
-      - /opt/eastj.co.jp/nginx.conf:/etc/nginx/nginx.conf
-      - /opt/eastj.co.jp/ejweb/www/:/usr/share/nginx/html/
+      - /opt/ejtech/infra/nginx.conf:/etc/nginx/nginx.conf
+      - /opt/ejtech/infra/EjWeb/www/:/usr/share/nginx/html/
     environment:
       VIRTUAL_HOST: www.eastj.co.jp
       VIRTUAL_PORT: 8080
