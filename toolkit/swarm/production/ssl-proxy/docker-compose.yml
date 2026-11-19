@@ -1,7 +1,6 @@
-version: "2"
 services:
   nginx-proxy:
-    image: jwilder/nginx-proxy
+    image: ghcr.io/ej-aoat/nijigapf/nginx-proxy-cus:1.0.0
     container_name: nginx-proxy
     privileged: true
     ports:
@@ -18,9 +17,11 @@ services:
       - ssl_proxy
     restart: always
   letsencrypt-nginx:
-    image: jrcs/letsencrypt-nginx-proxy-companion
+    image: nginxproxy/acme-companion
     container_name: letsencrypt-nginx
     privileged: true
+    environment:
+      ACME_HTTP_CHALLENGE_LOCATION: "true"
     volumes:
       - /opt/ejtech/proxy/certs:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
