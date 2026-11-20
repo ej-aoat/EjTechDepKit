@@ -1,6 +1,6 @@
 services:
   nginx-proxy:
-    image: ghcr.io/ej-aoat/nijigapf/nginx-proxy-cus:1.0.0
+    image: ghcr.io/ej-aoat/nijigapf/nginx-proxy-cus:1.0.1
     container_name: nginx-proxy
     privileged: true
     ports:
